@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>VSoftDiceGame</RootNamespace>
+    <RootNamespace>DiceGame</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
@@ -13,6 +13,12 @@
     <Using Include="SadConsole" />
     <Using Include="SadRogue.Primitives" />
     <Using Include="SadConsole.Console" Alias="Console" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\Fonts\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

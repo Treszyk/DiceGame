@@ -1,5 +1,6 @@
 using SadConsole;
 using SadRogue.Primitives;
+using DiceGame.Logic;
 
 namespace DiceGame.Components.Views;
 
@@ -53,11 +54,13 @@ public class HeaderView : BasePanel
 
         if (_isHoveringQuit != wasHovering)
         {
+            if (_isHoveringQuit) SoundUtility.PlayHover();
             Redraw();
         }
 
         if (_isHoveringQuit && state.Mouse.LeftClicked)
         {
+            SoundUtility.PlaySelect();
             OnQuitToMenu?.Invoke();
             return true;
         }

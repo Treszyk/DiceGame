@@ -82,6 +82,7 @@ public class RootScreen : ScreenObject
 
     private void TriggerGameOver()
     {
+        SoundUtility.PlayGameEnd();
         int maxScore = -1;
         var winners = new System.Collections.Generic.List<int>();
         

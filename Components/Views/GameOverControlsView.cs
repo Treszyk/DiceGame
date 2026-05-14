@@ -2,6 +2,7 @@ using SadConsole;
 using SadConsole.Input;
 using SadRogue.Primitives;
 using System;
+using DiceGame.Logic;
 
 namespace DiceGame.Components.Views;
 
@@ -108,17 +109,22 @@ public class GameOverControlsView : BasePanel
         _isHoveringMenu = _menuBounds.Contains(pos);
 
         if (wasHoverPlay != _isHoveringPlay || wasHoverMenu != _isHoveringMenu)
+        {
+            if (_isHoveringPlay || _isHoveringMenu) SoundUtility.PlayHover();
             Redraw();
+        }
 
         if (state.Mouse.LeftClicked)
         {
             if (_isHoveringPlay)
             {
+                SoundUtility.PlaySelect();
                 OnPlayAgain?.Invoke();
                 return true;
             }
             if (_isHoveringMenu)
             {
+                SoundUtility.PlaySelect();
                 OnMainMenu?.Invoke();
                 return true;
             }

@@ -182,9 +182,11 @@ public class ScoreboardView : BasePanel
             if (cat.HasValue && IsPlayable[cat.Value] && !_players[ActivePlayerIndex].Scores[cat.Value].HasValue)
             {
                 _hoveredCategory = cat.Value;
+                if (previousHover != _hoveredCategory) SoundUtility.PlayHover();
 
                 if (state.Mouse.LeftClicked)
                 {
+                    SoundUtility.PlayLock();
                     int ghostScore = ScoreCalculator.Calculate(_hoveredCategory, _hand.Dice);
                     _players[ActivePlayerIndex].LockScore(_hoveredCategory, ghostScore);
                     
@@ -192,6 +194,11 @@ public class ScoreboardView : BasePanel
                     _hoveredCategory = -1;
                     OnScoreLocked?.Invoke();
                 }
+            }
+            else if (state.Mouse.LeftClicked)
+            {
+                SoundUtility.PlayInactive();
+                return true;
             }
         }
 

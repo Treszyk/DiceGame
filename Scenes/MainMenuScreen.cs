@@ -4,6 +4,7 @@ using SadConsole;
 using SadConsole.Input;
 using SadRogue.Primitives;
 using DiceGame.Components;
+using DiceGame.Logic;
 
 namespace DiceGame.Scenes;
 
@@ -139,11 +140,13 @@ public class MainMenuScreen : ScreenSurface
 
         if (prevHovered != _hoveredIndex)
         {
+            if (_hoveredIndex != -1) SoundUtility.PlayHover();
             Redraw();
         }
 
         if (_hoveredIndex != -1 && state.Mouse.LeftClicked)
         {
+            SoundUtility.PlaySelect();
             if (_hoveredIndex < 3)
             {
                 OnPlayerCountSelected?.Invoke(_hoveredIndex + 2);

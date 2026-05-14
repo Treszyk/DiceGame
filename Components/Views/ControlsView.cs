@@ -92,11 +92,22 @@ public class ControlsView : BasePanel
         _isHovering = _rollButtonBounds.Contains(pos);
 
         if (wasHovering != _isHovering)
-            Redraw();
-
-        if (state.Mouse.LeftClicked && _isHovering && _hand.CanRoll)
         {
-            _hand.Roll();
+            if (_isHovering && _hand.CanRoll) SoundUtility.PlayHover();
+            Redraw();
+        }
+
+        if (state.Mouse.LeftClicked && _isHovering)
+        {
+            if (_hand.CanRoll)
+            {
+                SoundUtility.PlayDiceRoll();
+                _hand.Roll();
+            }
+            else
+            {
+                SoundUtility.PlayInactive();
+            }
             return true;
         }
         

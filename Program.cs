@@ -1,6 +1,8 @@
 using SadConsole.Configuration;
 using SadConsole;
 using DiceGame;
+using DiceGame.Logic;
+using Microsoft.Xna.Framework;
 
 Settings.WindowTitle = "Dice Game 2026";
 Settings.ResizeMode = Settings.WindowResizeOptions.None;
@@ -16,12 +18,21 @@ Builder
     .OnStart((sender, game) => 
     {
         game.DefaultFont = game.Fonts["Cheepicus12"];
+        SoundUtility.Initialize();
+        SoundUtility.PlayBGM();
+
+        game.FrameUpdate += (s, e) => 
+        {
+            FrameworkDispatcher.Update();
+        };
 
         void SwitchScreen(ScreenObject screen, int width)
         {
+            var oldScreen = game.Screen;
             game.ResizeWindow(width, GameSettings.TotalHeight, game.DefaultFont.GetFontSize(IFont.Sizes.One));
             game.Screen = screen;
             screen.IsFocused = true;
+            (oldScreen as System.IDisposable)?.Dispose();
         }
 
         void LoadMainMenu()

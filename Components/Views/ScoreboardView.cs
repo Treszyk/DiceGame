@@ -30,6 +30,7 @@ public class ScoreboardView : BasePanel
     private int _hoveredCategory = -1;
 
     public int ActivePlayerIndex { get; set; } = 0;
+    public event System.Action? OnScoreLocked;
 
     public ScoreboardView(PlayerState[] players, GameHand hand, int height)
         : base(GameSettings.LabelWidth + (players.Length * GameSettings.ColWidth) + 1, height, Theme.Amber)
@@ -160,6 +161,7 @@ public class ScoreboardView : BasePanel
                     
                     _hand.Reset();
                     _hoveredCategory = -1;
+                    OnScoreLocked?.Invoke();
                 }
             }
         }

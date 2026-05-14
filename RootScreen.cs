@@ -14,6 +14,7 @@ public class RootScreen : ScreenObject
     private ScoreboardView _scoreboard;
     private GameHand _hand;
     private PlayerState[] _players;
+    private int _activePlayerIndex = 0;
 
     public RootScreen()
     {
@@ -43,10 +44,28 @@ public class RootScreen : ScreenObject
         _diceTray.Position = new Point(p, p + GameSettings.HeaderHeight);
         _controls.Position = new Point(p, p + GameSettings.HeaderHeight + GameSettings.DiceTrayHeight);
         _scoreboard.Position = new Point(p + lw, p);
+        _scoreboard.OnScoreLocked += AdvanceTurn;
 
         Children.Add(_header);
         Children.Add(_diceTray);
         Children.Add(_controls);
         Children.Add(_scoreboard);
+    }
+
+    private void AdvanceTurn()
+    {
+        _activePlayerIndex++;
+        if (_activePlayerIndex >= GameSettings.PlayerCount)
+        {
+            _activePlayerIndex = 0;
+        }
+
+        _scoreboard.ActivePlayerIndex = _activePlayerIndex;
+        _scoreboard.Redraw();
+
+        if (System.Linq.Enumerable.All(_players, p => !p.HasEmptyCategories()))
+        {
+            System.Environment.Exit(0);
+        }
     }
 }

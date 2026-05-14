@@ -16,8 +16,14 @@ public class RootScreen : ScreenObject
     private PlayerState[] _players;
     private int _activePlayerIndex = 0;
 
-    public RootScreen()
+    private int _playerCount;
+    public System.Action OnQuitToMenuRequested = delegate { };
+
+    public RootScreen(int playerCount, System.Action onQuit)
     {
+        _playerCount = playerCount;
+        OnQuitToMenuRequested = onQuit;
+
         try 
         { 
             ((dynamic)SadConsole.Game.Instance).ScreenOptions.AllowWindowResize = false;
@@ -28,14 +34,16 @@ public class RootScreen : ScreenObject
 
         _hand = new GameHand();
         
-        _players = new PlayerState[GameSettings.PlayerCount];
-        for (int i = 0; i < GameSettings.PlayerCount; i++)
+        _players = new PlayerState[_playerCount];
+        for (int i = 0; i < _playerCount; i++)
             _players[i] = new PlayerState();
 
         int p = GameSettings.Padding;
         int lw = GameSettings.LeftWidth;
 
         _header = new HeaderView(lw, GameSettings.HeaderHeight);
+        _header.OnQuitToMenu += () => OnQuitToMenuRequested?.Invoke();
+        
         _diceTray = new DiceTrayView(lw, GameSettings.DiceTrayHeight, _hand);
         _controls = new ControlsView(lw, GameSettings.ControlsHeight, _hand);
         _scoreboard = new ScoreboardView(_players, _hand, GameSettings.ScoreboardHeight);
@@ -57,7 +65,7 @@ public class RootScreen : ScreenObject
     private void AdvanceTurn()
     {
         _activePlayerIndex++;
-        if (_activePlayerIndex >= GameSettings.PlayerCount)
+        if (_activePlayerIndex >= _playerCount)
         {
             _activePlayerIndex = 0;
         }
@@ -105,12 +113,12 @@ public class RootScreen : ScreenObject
 
         gameOverControls.OnPlayAgain += () => 
         {
-            SadConsole.Game.Instance.Screen = new RootScreen();
+            SadConsole.Game.Instance.Screen = new RootScreen(_playerCount, OnQuitToMenuRequested);
         };
         
         gameOverControls.OnMainMenu += () => 
         {
-            System.Environment.Exit(0);
+            OnQuitToMenuRequested?.Invoke();
         };
 
         Children.Add(gameOverBanner);
@@ -140,7 +148,7 @@ public class RootScreen : ScreenObject
         }
         if (keyboard.IsKeyPressed(SadConsole.Input.Keys.F4))
         {
-            DiceGame.Logic.CheatingUtility.ForceWin(_players, System.Linq.Enumerable.Range(0, GameSettings.PlayerCount).ToArray());
+            DiceGame.Logic.CheatingUtility.ForceWin(_players, System.Linq.Enumerable.Range(0, _playerCount).ToArray());
             AdvanceTurn();
             return true;
         }

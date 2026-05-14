@@ -57,8 +57,27 @@ public class DiceTrayView : BasePanel
         }
 
         int lastRowY = GetDiePosition(4).Y;
-        string hintText = _hand.RollCount == 0 ? "RZUC KOSCMI ABY ZACZAC!" : "WYBIERZ KATEGORIE NA TABLICY WYNIKOW!";
-        PrintCentered(0, Width, lastRowY + DiceSize + 4, hintText, Theme.Amber);
+        
+        string hint1 = "";
+        string hint2 = "";
+
+        if (_hand.RollCount == 0)
+        {
+            hint1 = "RZUC KOSCMI ABY ZACZAC!";
+        }
+        else if (_hand.RollCount < GameHand.MaxRolls)
+        {
+            hint1 = "WYBIERZ KATEGORIE NA TABLICY WYNIKOW!";
+            hint2 = "ALBO RZUC KOSCMI PONOWNIE!";
+        }
+        else
+        {
+            hint1 = "WYBIERZ KATEGORIE NA TABLICY WYNIKOW!";
+        }
+
+        PrintCentered(0, Width, lastRowY + DiceSize + 4, hint1, Theme.Amber);
+        if (hint2 != "")
+            PrintCentered(0, Width, lastRowY + DiceSize + 5, hint2, Theme.Amber);
     }
 
     private void DrawHoldButton(int x, int y, bool isHeld)

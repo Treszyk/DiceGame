@@ -13,7 +13,7 @@ public class ControlsView : BasePanel
     private bool _showNegative = false;
     private TimeSpan _blinkTimer = TimeSpan.Zero;
     private readonly TimeSpan _blinkInterval = TimeSpan.FromSeconds(0.5);
-    private readonly Rectangle _rollButtonBounds = new Rectangle(4, 2, 15, 1);
+    private readonly Rectangle _rollButtonBounds = new Rectangle(2, 1, 19, 3);
 
     public ControlsView(int width, int height, GameHand hand) : base(width, height, Theme.NeonGreen)
     {
@@ -23,7 +23,7 @@ public class ControlsView : BasePanel
         Redraw();
     }
 
-    public override void Update(TimeSpan delta)
+    public override void Update(System.TimeSpan delta)
     {
         base.Update(delta);
 
@@ -42,7 +42,7 @@ public class ControlsView : BasePanel
                 _blinkTimer += delta;
                 if (_blinkTimer >= _blinkInterval)
                 {
-                    _blinkTimer = TimeSpan.Zero;
+                    _blinkTimer = System.TimeSpan.Zero;
                     _showNegative = !_showNegative;
                     Redraw();
                 }
@@ -61,15 +61,28 @@ public class ControlsView : BasePanel
         DrawBorder();
 
         Color btnColor = _hand.CanRoll ? Theme.White : new Color(80, 80, 80);
-        string btnText = "[ RZUT KOSCMI ]";
+        string btnText = " [ RZUT KOSCMI ] ";
 
         if (_showNegative)
-            Surface.Print(_rollButtonBounds.X, _rollButtonBounds.Y, btnText, Theme.Black, btnColor);
+        {
+            Surface.Fill(_rollButtonBounds, Theme.Black, btnColor, 0);
+            Surface.Print(3, 2, btnText, Theme.Black, btnColor);
+        }
         else
-            Surface.Print(_rollButtonBounds.X, _rollButtonBounds.Y, btnText, btnColor, Theme.Black);
+        {
+            Surface.Print(3, 2, btnText, btnColor, Theme.Black);
+        }
 
-        string rightText = $"[ RZUTY: {GameHand.MaxRolls - _hand.RollCount} ]";
-        Surface.Print(Width - rightText.Length - 4, 2, rightText, Theme.NeonGreen, Theme.Black);
+        string rightLabel = "[ RZUTY: ";
+        int rollsLeft = GameHand.MaxRolls - _hand.RollCount;
+        string rightNum = rollsLeft.ToString();
+        string rightBracket = " ]";
+        
+        int startX = Width - rightLabel.Length - rightNum.Length - rightBracket.Length - 4;
+        
+        Surface.Print(startX, 2, rightLabel, Theme.NeonGreen, Theme.Black);
+        Surface.Print(startX + rightLabel.Length, 2, rightNum, Color.Cyan, Theme.Black);
+        Surface.Print(startX + rightLabel.Length + rightNum.Length, 2, rightBracket, Theme.NeonGreen, Theme.Black);
     }
 
     public override bool ProcessMouse(MouseScreenObjectState state)

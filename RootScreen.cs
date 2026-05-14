@@ -62,6 +62,7 @@ public class RootScreen : ScreenObject
 
         _scoreboard.ActivePlayerIndex = _activePlayerIndex;
         _scoreboard.Redraw();
+        _header.SetActivePlayer(_activePlayerIndex);
 
         if (System.Linq.Enumerable.All(_players, p => !p.HasEmptyCategories()))
         {

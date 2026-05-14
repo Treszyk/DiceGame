@@ -7,12 +7,22 @@
     <Nullable>enable</Nullable>
     <RootNamespace>DiceGame</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\Icons\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <Using Include="SadConsole" />
     <Using Include="SadRogue.Primitives" />
     <Using Include="SadConsole.Console" Alias="Console" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Icons\icon.ico">
+      <LogicalName>Icon.ico</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Assets\Icons\icon.bmp">
+      <LogicalName>Icon.bmp</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

@@ -61,4 +61,30 @@ public static class DiceRenderer
             }
         }
     }
+
+    public static void DrawSmall(ICellSurface surface, int x, int y, int value, bool isActive = true)
+    {
+        Color faceColor = isActive ? Color.White : new Color(30, 30, 30);
+        Color dotColor = isActive ? Color.Black : new Color(70, 70, 70);
+
+        surface.Fill(new Rectangle(x, y, 3, 3), dotColor, faceColor, 0);
+
+        char dotGlyph = (char)254;
+        
+        Point[] dots = new Point[]
+        {
+            new Point(0, 0), new Point(2, 0),
+            new Point(0, 1), new Point(1, 1), new Point(2, 1),
+            new Point(0, 2), new Point(2, 2)
+        };
+
+        if (value >= 1 && value <= 6)
+        {
+            foreach (int index in _valuePatterns[value - 1])
+            {
+                var pos = dots[index];
+                surface.SetGlyph(x + pos.X, y + pos.Y, dotGlyph, dotColor, faceColor);
+            }
+        }
+    }
 }

@@ -50,6 +50,8 @@ public class RootScreen : ScreenObject
         Children.Add(_diceTray);
         Children.Add(_controls);
         Children.Add(_scoreboard);
+
+        IsFocused = true;
     }
 
     private void AdvanceTurn()
@@ -66,7 +68,84 @@ public class RootScreen : ScreenObject
 
         if (System.Linq.Enumerable.All(_players, p => !p.HasEmptyCategories()))
         {
-            System.Environment.Exit(0);
+            TriggerGameOver();
         }
+    }
+
+    private void TriggerGameOver()
+    {
+        int maxScore = -1;
+        var winners = new System.Collections.Generic.List<int>();
+        
+        for (int i = 0; i < _players.Length; i++)
+        {
+            int score = _players[i].Scores[17].GetValueOrDefault();
+            if (score > maxScore)
+            {
+                maxScore = score;
+                winners.Clear();
+                winners.Add(i);
+            }
+            else if (score == maxScore)
+            {
+                winners.Add(i);
+            }
+        }
+
+        _scoreboard.SetGameOver(winners);
+
+        Children.Remove(_diceTray);
+        Children.Remove(_controls);
+
+        var gameOverBanner = new GameOverBannerView(GameSettings.LeftWidth, GameSettings.DiceTrayHeight, winners, maxScore);
+        gameOverBanner.Position = _diceTray.Position;
+
+        var gameOverControls = new GameOverControlsView(GameSettings.LeftWidth, GameSettings.ControlsHeight);
+        gameOverControls.Position = _controls.Position;
+
+        gameOverControls.OnPlayAgain += () => 
+        {
+            SadConsole.Game.Instance.Screen = new RootScreen();
+        };
+        
+        gameOverControls.OnMainMenu += () => 
+        {
+            System.Environment.Exit(0);
+        };
+
+        Children.Add(gameOverBanner);
+        Children.Add(gameOverControls);
+    }
+
+    public override bool ProcessKeyboard(SadConsole.Input.Keyboard keyboard)
+    {
+        /*
+        if (keyboard.IsKeyPressed(SadConsole.Input.Keys.F1))
+        {
+            DiceGame.Logic.CheatingUtility.ForceWin(_players, 0);
+            AdvanceTurn();
+            return true;
+        }
+        if (keyboard.IsKeyPressed(SadConsole.Input.Keys.F2))
+        {
+            DiceGame.Logic.CheatingUtility.ForceWin(_players, 0, 2);
+            AdvanceTurn();
+            return true;
+        }
+        if (keyboard.IsKeyPressed(SadConsole.Input.Keys.F3))
+        {
+            DiceGame.Logic.CheatingUtility.ForceUpperBonus(_players, 0);
+            _scoreboard.Redraw();
+            return true;
+        }
+        if (keyboard.IsKeyPressed(SadConsole.Input.Keys.F4))
+        {
+            DiceGame.Logic.CheatingUtility.ForceWin(_players, System.Linq.Enumerable.Range(0, GameSettings.PlayerCount).ToArray());
+            AdvanceTurn();
+            return true;
+        }
+        */
+
+        return base.ProcessKeyboard(keyboard);
     }
 }

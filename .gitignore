@@ -8,3 +8,4 @@
 *.sln.docstates
 .idea/
 .DS_Store
+CheatingUtility.cs

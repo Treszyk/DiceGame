@@ -29,6 +29,9 @@ public class ScoreboardView : BasePanel
     private readonly PlayerState[] _players;
     private int _hoveredCategory = -1;
 
+    private bool _isGameOver = false;
+    private System.Collections.Generic.List<int> _winners = new();
+
     public int ActivePlayerIndex { get; set; } = 0;
     public event System.Action? OnScoreLocked;
 
@@ -39,6 +42,13 @@ public class ScoreboardView : BasePanel
         _hand = hand;
         UseMouse = true;
         _hand.OnHandChanged += Redraw;
+        Redraw();
+    }
+
+    public void SetGameOver(System.Collections.Generic.List<int> winners)
+    {
+        _isGameOver = true;
+        _winners = winners;
         Redraw();
     }
 
@@ -79,7 +89,17 @@ public class ScoreboardView : BasePanel
         for (int p = 0; p < _players.Length; p++)
         {
             int x = GameSettings.LabelWidth + (p * GameSettings.ColWidth);
-            Color headerColor = p == ActivePlayerIndex ? Theme.White : Theme.Amber;
+            Color headerColor = Theme.Amber;
+            
+            if (_isGameOver)
+            {
+                headerColor = _winners.Contains(p) ? Theme.NeonGreen : Color.Red;
+            }
+            else
+            {
+                headerColor = p == ActivePlayerIndex ? Theme.White : Theme.Amber;
+            }
+            
             PrintCentered(x + 1, GameSettings.ColWidth - 1, 2, $"GRACZ  {p + 1}", headerColor);
         }
     }
@@ -102,9 +122,16 @@ public class ScoreboardView : BasePanel
         if (_players[playerIndex].Scores[categoryIndex].HasValue)
         {
             string text = _players[playerIndex].Scores[categoryIndex].GetValueOrDefault().ToString().PadLeft(2, '0');
-            PrintCentered(x + 1, GameSettings.ColWidth - 1, y, text, Theme.NeonGreen);
+            Color scoreColor = Theme.NeonGreen;
+            
+            if (_isGameOver)
+            {
+                scoreColor = _winners.Contains(playerIndex) ? Theme.NeonGreen : Color.Red;
+            }
+            
+            PrintCentered(x + 1, GameSettings.ColWidth - 1, y, text, scoreColor);
         }
-        else if (playerIndex == ActivePlayerIndex && IsPlayable[categoryIndex] && _hand.RollCount > 0)
+        else if (!_isGameOver && playerIndex == ActivePlayerIndex && IsPlayable[categoryIndex] && _hand.RollCount > 0)
         {
             int ghostScore = ScoreCalculator.Calculate(categoryIndex, _hand.Dice);
             string text = ghostScore.ToString().PadLeft(2, '0');
@@ -140,6 +167,8 @@ public class ScoreboardView : BasePanel
 
     public override bool ProcessMouse(MouseScreenObjectState state)
     {
+        if (_isGameOver) return base.ProcessMouse(state);
+
         Point pos = state.CellPosition;
         int activeColumnXStart = GameSettings.LabelWidth + (ActivePlayerIndex * GameSettings.ColWidth);
         int activeColumnXEnd = activeColumnXStart + GameSettings.ColWidth;

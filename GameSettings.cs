@@ -2,7 +2,7 @@ namespace DiceGame;
 
 public static class GameSettings
 {
-    public const int PlayerCount = 3;
+    public const int PlayerCount = 4;
     public const int Padding = 1;
 
     public const int LeftWidth = 51;

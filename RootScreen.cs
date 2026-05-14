@@ -11,6 +11,7 @@ public class RootScreen : ScreenObject
     private DiceTrayView _diceTray;
     private ControlsView _controls;
     private ScoreboardView _scoreboard;
+    private Logic.GameHand _hand;
 
     public RootScreen()
     {
@@ -22,12 +23,13 @@ public class RootScreen : ScreenObject
         } 
         catch { }
 
+        _hand = new Logic.GameHand();
         int p = GameSettings.Padding;
         int lw = GameSettings.LeftWidth;
 
         _header = new HeaderView(lw, GameSettings.HeaderHeight);
-        _diceTray = new DiceTrayView(lw, GameSettings.DiceTrayHeight);
-        _controls = new ControlsView(lw, GameSettings.ControlsHeight);
+        _diceTray = new DiceTrayView(lw, GameSettings.DiceTrayHeight, _hand);
+        _controls = new ControlsView(lw, GameSettings.ControlsHeight, _hand);
         _scoreboard = new ScoreboardView(GameSettings.PlayerCount, GameSettings.ScoreboardHeight);
 
         _header.Position = new Point(p, p);

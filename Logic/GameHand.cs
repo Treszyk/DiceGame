@@ -6,6 +6,8 @@ public class GameHand
     public int RollCount { get; private set; }
     public const int MaxRolls = 3;
 
+    public event System.Action OnHandChanged;
+
     public GameHand()
     {
         Dice = new Die[5];
@@ -13,6 +15,12 @@ public class GameHand
             Dice[i] = new Die();
         
         RollCount = 0;
+    }
+
+    public void ToggleHold(int index)
+    {
+        Dice[index].IsHeld = !Dice[index].IsHeld;
+        OnHandChanged?.Invoke();
     }
 
     public void Roll()
@@ -23,6 +31,7 @@ public class GameHand
                 die.Roll();
             
             RollCount++;
+            OnHandChanged?.Invoke();
         }
     }
 
@@ -32,6 +41,7 @@ public class GameHand
             die.Reset();
         
         RollCount = 0;
+        OnHandChanged?.Invoke();
     }
 
     public bool CanRoll => RollCount < MaxRolls;

@@ -1,5 +1,7 @@
 using SadConsole;
+using SadConsole.Input;
 using SadRogue.Primitives;
+using DiceGame.Logic;
 
 namespace DiceGame.Components.Views;
 
@@ -7,38 +9,56 @@ public class DiceTrayView : BasePanel
 {
     private const int DiceSize = 9;
     private const int DiceGap = 3;
+    private readonly GameHand _hand;
 
-    public DiceTrayView(int width, int height) : base(width, height, Theme.NeonGreen)
+    public DiceTrayView(int width, int height, GameHand hand) : base(width, height, Theme.NeonGreen)
+    {
+        _hand = hand;
+        _hand.OnHandChanged += Redraw;
+        UseMouse = true;
+        Redraw();
+    }
+
+    private Point GetDiePosition(int index)
     {
         int row1Count = 3;
         int row2Count = 2;
-
         int row1Total = row1Count * DiceSize + (row1Count - 1) * DiceGap;
         int row2Total = row2Count * DiceSize + (row2Count - 1) * DiceGap;
-
-        int row1X = (width - row1Total) / 2;
-        int row2X = (width - row2Total) / 2;
-
+        
         int row1Y = 2;
         int row2Y = row1Y + DiceSize + 4;
 
-        for (int i = 0; i < row1Count; i++)
+        if (index < row1Count)
+            return new Point((Width - row1Total) / 2 + index * (DiceSize + DiceGap), row1Y);
+        
+        int i = index - row1Count;
+        return new Point((Width - row2Total) / 2 + i * (DiceSize + DiceGap), row2Y);
+    }
+
+    private Rectangle GetDieHitbox(int index)
+    {
+        Point pos = GetDiePosition(index);
+        return new Rectangle(pos.X, pos.Y, DiceSize, DiceSize + 2);
+    }
+
+    public void Redraw()
+    {
+        Surface.Clear();
+        DrawBorder();
+
+        bool isActive = _hand.RollCount > 0;
+
+        for (int i = 0; i < 5; i++)
         {
-            int x = row1X + i * (DiceSize + DiceGap);
-            DiceRenderer.Draw(Surface, x, row1Y, i + 1, i == 2);
-            DrawHoldButton(x, row1Y + DiceSize + 1, i == 2);
+            Point pos = GetDiePosition(i);
+            DiceRenderer.Draw(Surface, pos.X, pos.Y, _hand.Dice[i].Value, _hand.Dice[i].IsHeld, isActive);
+            DrawHoldButton(pos.X, pos.Y + DiceSize + 1, _hand.Dice[i].IsHeld);
         }
 
-        for (int i = 0; i < row2Count; i++)
-        {
-            int x = row2X + i * (DiceSize + DiceGap);
-            int diceIndex = row1Count + i;
-            DiceRenderer.Draw(Surface, x, row2Y, diceIndex + 1, false);
-            DrawHoldButton(x, row2Y + DiceSize + 1, false);
-        }
-
-        int hintY = row2Y + DiceSize + 4;
-        PrintCentered(0, width, hintY, "BIEZACA REKA: TROJKA", Theme.Amber);
+        int lastRowY = GetDiePosition(4).Y;
+        string hintText = _hand.RollCount == 0 ? "RZUC KOSCMI ABY ZACZAC" : "BIEZACA REKA: TROJKA";
+        PrintCentered(0, Width, lastRowY + DiceSize + 4, hintText, Theme.Amber);
     }
 
     private void DrawHoldButton(int x, int y, bool isHeld)
@@ -47,5 +67,21 @@ public class DiceTrayView : BasePanel
             Surface.Print(x, y, " TRZYMAJ ", Theme.Black, Theme.NeonGreen);
         else
             Surface.Print(x, y, " TRZYMAJ ", new Color(80, 80, 80), Theme.Black);
+    }
+
+    public override bool ProcessMouse(MouseScreenObjectState state)
+    {
+        if (state.Mouse.LeftClicked)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                if (GetDieHitbox(i).Contains(state.CellPosition))
+                {
+                    _hand.ToggleHold(i);
+                    return true;
+                }
+            }
+        }
+        return base.ProcessMouse(state);
     }
 }

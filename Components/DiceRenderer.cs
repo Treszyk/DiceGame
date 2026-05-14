@@ -12,11 +12,17 @@ public static class DiceRenderer
         new int[] { 0, 1, 2, 4, 5, 6 }
     };
 
-    public static void Draw(ICellSurface surface, int x, int y, int value, bool isHeld)
+    public static void Draw(ICellSurface surface, int x, int y, int value, bool isHeld, bool isActive = true)
     {
         Color faceColor, dotColor, borderColor;
 
-        if (isHeld)
+        if (!isActive)
+        {
+            faceColor = new Color(30, 30, 30);
+            dotColor = new Color(70, 70, 70);
+            borderColor = new Color(60, 60, 60);
+        }
+        else if (isHeld)
         {
             faceColor = Color.Black;
             dotColor = Color.White;

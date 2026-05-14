@@ -2,6 +2,7 @@ namespace DiceGame.Scenes;
 
 using DiceGame.Components;
 using DiceGame.Components.Views;
+using DiceGame.Logic;
 using SadConsole;
 using SadRogue.Primitives;
 
@@ -11,7 +12,8 @@ public class RootScreen : ScreenObject
     private DiceTrayView _diceTray;
     private ControlsView _controls;
     private ScoreboardView _scoreboard;
-    private Logic.GameHand _hand;
+    private GameHand _hand;
+    private PlayerState[] _players;
 
     public RootScreen()
     {
@@ -23,14 +25,19 @@ public class RootScreen : ScreenObject
         } 
         catch { }
 
-        _hand = new Logic.GameHand();
+        _hand = new GameHand();
+        
+        _players = new PlayerState[GameSettings.PlayerCount];
+        for (int i = 0; i < GameSettings.PlayerCount; i++)
+            _players[i] = new PlayerState();
+
         int p = GameSettings.Padding;
         int lw = GameSettings.LeftWidth;
 
         _header = new HeaderView(lw, GameSettings.HeaderHeight);
         _diceTray = new DiceTrayView(lw, GameSettings.DiceTrayHeight, _hand);
         _controls = new ControlsView(lw, GameSettings.ControlsHeight, _hand);
-        _scoreboard = new ScoreboardView(GameSettings.PlayerCount, GameSettings.ScoreboardHeight);
+        _scoreboard = new ScoreboardView(_players, _hand, GameSettings.ScoreboardHeight);
 
         _header.Position = new Point(p, p);
         _diceTray.Position = new Point(p, p + GameSettings.HeaderHeight);

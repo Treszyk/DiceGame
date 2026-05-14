@@ -22,10 +22,15 @@ public abstract class BasePanel : ScreenSurface
 
     protected void PrintCentered(int xStart, int availableWidth, int y, string text, Color color)
     {
+        PrintCentered(xStart, availableWidth, y, text, color, Theme.Black);
+    }
+
+    protected void PrintCentered(int xStart, int availableWidth, int y, string text, Color color, Color backgroundColor)
+    {
         if (text.Length > availableWidth)
             text = text.Substring(0, availableWidth);
 
         int offset = (availableWidth - text.Length) / 2;
-        Surface.Print(xStart + offset, y, text, color, Theme.Black);
+        Surface.Print(xStart + offset, y, text, color, backgroundColor);
     }
 }

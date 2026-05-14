@@ -57,7 +57,7 @@ public class DiceTrayView : BasePanel
         }
 
         int lastRowY = GetDiePosition(4).Y;
-        string hintText = _hand.RollCount == 0 ? "RZUC KOSCMI ABY ZACZAC" : "BIEZACA REKA: TROJKA";
+        string hintText = _hand.RollCount == 0 ? "RZUC KOSCMI ABY ZACZAC!" : "WYBIERZ KATEGORIE NA TABLICY WYNIKOW!";
         PrintCentered(0, Width, lastRowY + DiceSize + 4, hintText, Theme.Amber);
     }
 
@@ -73,6 +73,9 @@ public class DiceTrayView : BasePanel
     {
         if (state.Mouse.LeftClicked)
         {
+            if (_hand.RollCount == 0)
+                return base.ProcessMouse(state);
+
             for (int i = 0; i < 5; i++)
             {
                 if (GetDieHitbox(i).Contains(state.CellPosition))

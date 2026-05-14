@@ -6,7 +6,7 @@ public class GameHand
     public int RollCount { get; private set; }
     public const int MaxRolls = 3;
 
-    public event System.Action OnHandChanged;
+    public event System.Action? OnHandChanged;
 
     public GameHand()
     {

@@ -1,34 +1,43 @@
 namespace DiceGame.Scenes;
 
 using DiceGame.Components;
-using DiceGame;
+using DiceGame.Components.Views;
+using SadConsole;
+using SadRogue.Primitives;
 
-class RootScreen : ScreenObject
+public class RootScreen : ScreenObject
 {
-    private ScreenSurface _mainSurface;
-    private ScreenSurface _diceTray;
+    private HeaderView _header;
+    private DiceTrayView _diceTray;
+    private ControlsView _controls;
+    private ScoreboardView _scoreboard;
 
     public RootScreen()
     {
-        _mainSurface = new ScreenSurface(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
-        _mainSurface.Fill(Color.Black, Color.Black, 0);
+        try 
+        { 
+            ((dynamic)SadConsole.Game.Instance).ScreenOptions.AllowWindowResize = false;
+            var mono = ((dynamic)SadConsole.Game.Instance).MonoGameInstance;
+            mono.Window.AllowUserResizing = false;
+        } 
+        catch { }
 
-        _diceTray = new ScreenSurface(53, 10);
-        _diceTray.Position = new Point(0, 5); 
-        _diceTray.Font = Game.Instance.Fonts["Cheepicus12"];
+        int p = GameSettings.Padding;
+        int lw = GameSettings.LeftWidth;
 
-        for (int i = 0; i < 5; i++)
-        {
-            bool isHeld = (i == 2);
-            DiceRenderer.Draw(_diceTray.Surface, 2 + (i * 10), 0, i + 1, isHeld);
-        }
+        _header = new HeaderView(lw, GameSettings.HeaderHeight);
+        _diceTray = new DiceTrayView(lw, GameSettings.DiceTrayHeight);
+        _controls = new ControlsView(lw, GameSettings.ControlsHeight);
+        _scoreboard = new ScoreboardView(GameSettings.PlayerCount, GameSettings.ScoreboardHeight);
 
-        _mainSurface.DrawBox(new Rectangle(0, 0, GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT), 
-                            ShapeParameters.CreateStyledBox(ICellSurface.ConnectedLineThin, new ColoredGlyph(Color.White, Color.Black)));
+        _header.Position = new Point(p, p);
+        _diceTray.Position = new Point(p, p + GameSettings.HeaderHeight);
+        _controls.Position = new Point(p, p + GameSettings.HeaderHeight + GameSettings.DiceTrayHeight);
+        _scoreboard.Position = new Point(p + lw, p);
 
-        _mainSurface.Print(2, 0, " [ DICE GAME 2026 ] ", Color.Yellow, Color.Black);
-
-        Children.Add(_mainSurface);
+        Children.Add(_header);
         Children.Add(_diceTray);
+        Children.Add(_controls);
+        Children.Add(_scoreboard);
     }
 }

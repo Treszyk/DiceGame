@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>DiceGame</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Assets\Icons\icon.ico</ApplicationIcon>
+    <ApplicationIcon>Assets/Icons/icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,16 +17,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Icons\icon.ico">
+    <EmbeddedResource Include="Assets/Icons/icon.ico">
       <LogicalName>Icon.ico</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Assets\Icons\icon.bmp">
+    <EmbeddedResource Include="Assets/Icons/Icon.bmp">
       <LogicalName>Icon.bmp</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets\Fonts\**">
+    <None Update="Assets/Fonts/**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

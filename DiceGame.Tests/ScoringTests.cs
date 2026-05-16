@@ -153,4 +153,16 @@ public class ScoringTests
         int result = ScoreCalculator.CalculateUpperSum(scores);
         Assert.Equal(21, result);
     }
+
+    [Fact]
+    public void CalculateLowerSum_CorrectSum_ReturnsTotal()
+    {
+        int?[] scores = new int?[18];
+        scores[ScoreCategory.ThreeOfAKind] = 15;
+        scores[ScoreCategory.FullHouse] = 25;
+        scores[ScoreCategory.King] = 50;
+
+        int result = ScoreCalculator.CalculateLowerSum(scores);
+        Assert.Equal(90, result);
+    }
 }

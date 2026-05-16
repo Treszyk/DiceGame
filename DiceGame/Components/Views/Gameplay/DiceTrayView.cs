@@ -104,6 +104,7 @@ public class DiceTrayView : BasePanel
                 if (GetDieHitbox(i).Contains(state.CellPosition))
                 {
                     _hand.ToggleHold(i);
+                    SoundUtility.PlayRoll();
                     return true;
                 }
             }

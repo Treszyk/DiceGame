@@ -2,7 +2,7 @@ using SadConsole.Configuration;
 using DiceGame.Components.Core;
 using Microsoft.Xna.Framework;
 
-Settings.WindowTitle = "Dice Game 2026";
+Settings.WindowTitle = "Dice Game";
 Settings.ResizeMode = Settings.WindowResizeOptions.None;
 Settings.AllowWindowResize = false;
 
@@ -11,7 +11,7 @@ Builder
     .SetWindowSizeInPixels(80 * 12, GameSettings.TotalHeight * 12)
     .ConfigureFonts((config, game) => 
     {
-        game.LoadFont("Assets/Fonts/Cheepicus_12x12.font");
+        game.LoadFont(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Fonts", "Cheepicus_12x12.font"));
     })
     .OnStart((sender, game) => 
     {

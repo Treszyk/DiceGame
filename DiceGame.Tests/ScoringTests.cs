@@ -16,6 +16,13 @@ public class ScoringTests
     [InlineData(new[] { 4, 4, 4, 4, 1 }, ScoreCategory.Fours, 16)]
     [InlineData(new[] { 1, 5, 5, 5, 5 }, ScoreCategory.Fives, 20)]
     [InlineData(new[] { 1, 2, 3, 4, 6 }, ScoreCategory.Sixes, 6)]
+    // Examples from Wikipedia
+    [InlineData(new[] { 1, 1, 1, 3, 5 }, ScoreCategory.Ones, 3)]
+    [InlineData(new[] { 2, 2, 2, 5, 6 }, ScoreCategory.Twos, 6)]
+    [InlineData(new[] { 3, 3, 3, 3, 4 }, ScoreCategory.Threes, 12)]
+    [InlineData(new[] { 4, 4, 5, 5, 5 }, ScoreCategory.Fours, 8)]
+    [InlineData(new[] { 1, 1, 2, 2, 5 }, ScoreCategory.Fives, 5)]
+    [InlineData(new[] { 2, 3, 6, 6, 6 }, ScoreCategory.Sixes, 18)]
     public void Calculate_BasicCategories_ReturnsCorrectSum(int[] values, int category, int expected)
     {
         var dice = CreateDice(values);
@@ -39,6 +46,15 @@ public class ScoringTests
         Assert.Equal(0, result);
     }
 
+    // Example from Wikipedia
+    [Fact]
+    public void Calculate_ThreeOfAKind_WikipediaExample_Returns17()
+    {
+        var dice = CreateDice(2, 3, 4, 4, 4);
+        int result = ScoreCalculator.Calculate(ScoreCategory.ThreeOfAKind, dice);
+        Assert.Equal(17, result);
+    }
+
     [Fact]
     public void Calculate_FourOfAKind_ValidHand_ReturnsSum()
     {
@@ -53,6 +69,15 @@ public class ScoringTests
         var dice = CreateDice(4, 4, 4, 1, 2);
         int result = ScoreCalculator.Calculate(ScoreCategory.FourOfAKind, dice);
         Assert.Equal(0, result);
+    }
+
+    // Example from Wikipedia
+    [Fact]
+    public void Calculate_FourOfAKind_WikipediaExample_Returns24()
+    {
+        var dice = CreateDice(4, 5, 5, 5, 5);
+        int result = ScoreCalculator.Calculate(ScoreCategory.FourOfAKind, dice);
+        Assert.Equal(24, result);
     }
 
     [Theory]
@@ -73,6 +98,15 @@ public class ScoringTests
         Assert.Equal(0, result);
     }
 
+    // Example from Wikipedia
+    [Fact]
+    public void Calculate_FullHouse_WikipediaExample_Returns25()
+    {
+        var dice = CreateDice(2, 2, 5, 5, 5);
+        int result = ScoreCalculator.Calculate(ScoreCategory.FullHouse, dice);
+        Assert.Equal(25, result);
+    }
+
     [Theory]
     [InlineData(new[] { 4, 1, 3, 2, 6 }, 30)]
     [InlineData(new[] { 3, 5, 4, 6, 1 }, 30)]
@@ -89,6 +123,15 @@ public class ScoringTests
         var dice = CreateDice(1, 2, 3, 5, 6);
         int result = ScoreCalculator.Calculate(ScoreCategory.SmallStraight, dice);
         Assert.Equal(0, result);
+    }
+
+    // Example from Wikipedia
+    [Fact]
+    public void Calculate_SmallStraight_WikipediaExample_Returns30()
+    {
+        var dice = CreateDice(1, 3, 4, 5, 6);
+        int result = ScoreCalculator.Calculate(ScoreCategory.SmallStraight, dice);
+        Assert.Equal(30, result);
     }
 
     [Theory]
@@ -109,6 +152,15 @@ public class ScoringTests
         Assert.Equal(0, result);
     }
 
+    // Example from Wikipedia
+    [Fact]
+    public void Calculate_LargeStraight_WikipediaExample_Returns40()
+    {
+        var dice = CreateDice(1, 2, 3, 4, 5);
+        int result = ScoreCalculator.Calculate(ScoreCategory.LargeStraight, dice);
+        Assert.Equal(40, result);
+    }
+
     [Fact]
     public void Calculate_King_ValidHand_Returns50()
     {
@@ -124,12 +176,31 @@ public class ScoringTests
         int result = ScoreCalculator.Calculate(ScoreCategory.King, dice);
         Assert.Equal(0, result);
     }
+
+    // Example from Wikipedia
+    [Fact]
+    public void Calculate_King_WikipediaExample_Returns50()
+    {
+        var dice = CreateDice(1, 1, 1, 1, 1);
+        int result = ScoreCalculator.Calculate(ScoreCategory.King, dice);
+        Assert.Equal(50, result);
+    }
+
     [Fact]
     public void Calculate_Chance_ReturnsSum()
     {
         var dice = CreateDice(1, 2, 3, 4, 6);
         int result = ScoreCalculator.Calculate(ScoreCategory.Chance, dice);
         Assert.Equal(16, result);
+    }
+
+    // Example from Wikipedia
+    [Fact]
+    public void Calculate_Chance_WikipediaExample_Returns13()
+    {
+        var dice = CreateDice(1, 1, 3, 3, 5);
+        int result = ScoreCalculator.Calculate(ScoreCategory.Chance, dice);
+        Assert.Equal(13, result);
     }
 
     [Theory]

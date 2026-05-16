@@ -43,6 +43,10 @@ Komunikacja między stanem gry a interfejsem odbywa się poprzez zdarzenia (even
 
 Wszystkie kluczowe parametry, takie jak wymiary interfejsu, progi punktowe czy wartości premii, zostały zgrupowane w klasach statycznych (`GameSettings.cs`, `ScoreCategory.cs`). Zapewnia to jedno źródło prawdy (SSOT) dla całego projektu.
 
+### Bezpieczeństwo i uczciwość (CSPRNG)
+
+W grze zrezygnowano ze standardowego generatora `System.Random` na rzecz kryptograficznie bezpiecznego `RandomNumberGenerator` (CSPRNG). Gwarantuje to wysoką nieprzewidywalność rzutów i uniemożliwia przewidzenie kolejnych wyników na podstawie analizy poprzednich serii, co jest kluczowe dla zachowania zasad fair play.
+
 ## Struktura projektu
 
 - **DiceGame.sln** – Główne rozwiązanie.

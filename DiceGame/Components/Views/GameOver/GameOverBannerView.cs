@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using DiceGame.Components.Core;
 
 namespace DiceGame.Components.Views.GameOver;
@@ -10,7 +11,6 @@ public class GameOverBannerView : BasePanel
     private TimeSpan _animTimer = System.TimeSpan.Zero;
     private readonly TimeSpan _animInterval = System.TimeSpan.FromMilliseconds(300);
     private readonly int[] _cornerDiceValues = { 1, 2, 3, 4 };
-    private readonly System.Random _rnd = new System.Random();
 
     public GameOverBannerView(int width, int height, List<int> winners, int winningScore) : base(width, height, Theme.NeonGreen)
     {
@@ -29,7 +29,7 @@ public class GameOverBannerView : BasePanel
             _animTimer = System.TimeSpan.Zero;
             for (int i = 0; i < 4; i++)
             {
-                _cornerDiceValues[i] = _rnd.Next(1, 7);
+                _cornerDiceValues[i] = RandomNumberGenerator.GetInt32(1, 7);
             }
             Redraw();
         }

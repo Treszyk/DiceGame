@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using DiceGame.Components.Core;
 
 namespace DiceGame.Scenes;
@@ -12,7 +13,6 @@ public class MainMenuScreen : BasePanel
     private readonly int[] _decoDiceValues = new int[8];
     private TimeSpan _decoTimer = TimeSpan.Zero;
     private readonly TimeSpan _decoInterval = TimeSpan.FromMilliseconds(40);
-    private readonly Random _rnd = new Random();
 
     public event Action<int>? OnPlayerCountSelected;
     public event Action? OnQuitRequested;
@@ -29,7 +29,7 @@ public class MainMenuScreen : BasePanel
         for (int i = 0; i < 8; i++)
         {
             _decoDicePathIndex[i] = (i * _borderPath.Count / 8) % _borderPath.Count;
-            _decoDiceValues[i] = _rnd.Next(1, 7);
+            _decoDiceValues[i] = RandomNumberGenerator.GetInt32(1, 7);
         }
 
         int startY = Height / 2 - 2;
@@ -54,7 +54,11 @@ public class MainMenuScreen : BasePanel
             for (int i = 0; i < 8; i++)
             {
                 _decoDicePathIndex[i] = (_decoDicePathIndex[i] + 1) % _borderPath.Count;
-                if (_rnd.NextDouble() < 0.1) _decoDiceValues[i] = _rnd.Next(1, 7);
+                
+                // 10% chance to change value
+                byte[] b = new byte[1];
+                RandomNumberGenerator.Fill(b);
+                if (b[0] < 26) _decoDiceValues[i] = RandomNumberGenerator.GetInt32(1, 7);
             }
             Redraw();
         }

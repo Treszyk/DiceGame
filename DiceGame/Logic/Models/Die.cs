@@ -1,8 +1,9 @@
+using System.Security.Cryptography;
+
 namespace DiceGame.Logic.Models;
 
 public class Die
 {
-    private static readonly Random _random = new Random();
     public int Value { get; private set; }
     public bool IsHeld { get; set; }
 
@@ -15,7 +16,7 @@ public class Die
     public void Roll()
     {
         if (!IsHeld)
-            Value = _random.Next(1, 7);
+            Value = RandomNumberGenerator.GetInt32(1, 7);
     }
 
     public void Reset()

@@ -51,6 +51,11 @@ public class RootScreen : ScreenObject, IDisposable
     {
         _session.OnTurnAdvanced -= SyncSessionToUi;
         _session.OnGameOver -= TriggerGameOver;
+        
+        _header.Dispose();
+        _diceTray.Dispose();
+        _controls.Dispose();
+        _scoreboard.Dispose();
     }
 
 

@@ -1,4 +1,3 @@
-using System.Linq;
 using DiceGame.Logic.Scoring;
 
 namespace DiceGame.Logic.Models;

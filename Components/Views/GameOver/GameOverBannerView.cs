@@ -1,5 +1,4 @@
 using DiceGame.Components.Core;
-using System.Collections.Generic;
 
 namespace DiceGame.Components.Views.GameOver;
 

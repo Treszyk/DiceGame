@@ -1,7 +1,6 @@
 using DiceGame.Logic.Models;
 using DiceGame.Logic.Scoring;
 using DiceGame.Components.Core;
-using System.Linq;
 
 namespace DiceGame.Components.Views.Gameplay;
 

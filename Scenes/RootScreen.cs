@@ -21,14 +21,6 @@ public class RootScreen : ScreenObject
         OnQuitToMenuRequested = onQuit;
         _session = new GameSession(playerCount);
 
-        try 
-        { 
-            ((dynamic)SadConsole.Game.Instance).ScreenOptions.AllowWindowResize = false;
-            var mono = ((dynamic)SadConsole.Game.Instance).MonoGameInstance;
-            mono.Window.AllowUserResizing = false;
-        } 
-        catch { }
-
         int p = GameSettings.Padding;
         int lw = GameSettings.LeftWidth;
 

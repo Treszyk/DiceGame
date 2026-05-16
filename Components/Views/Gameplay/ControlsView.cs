@@ -7,9 +7,7 @@ public class ControlsView : BasePanel
 {
     private readonly GameHand _hand;
     private bool _isHovering = false;
-    private bool _showNegative = false;
-    private TimeSpan _blinkTimer = TimeSpan.Zero;
-    private readonly TimeSpan _blinkInterval = TimeSpan.FromSeconds(0.5);
+    private readonly BlinkState _blink = new();
     private readonly Rectangle _rollButtonBounds = new Rectangle(2, 1, 19, 3);
 
     public ControlsView(int width, int height, GameHand hand) : base(width, height, Theme.NeonGreen)
@@ -26,28 +24,11 @@ public class ControlsView : BasePanel
 
         if (_hand.CanRoll)
         {
-            if (_isHovering)
-            {
-                if (!_showNegative)
-                {
-                    _showNegative = true;
-                    Redraw();
-                }
-            }
-            else
-            {
-                _blinkTimer += delta;
-                if (_blinkTimer >= _blinkInterval)
-                {
-                    _blinkTimer = System.TimeSpan.Zero;
-                    _showNegative = !_showNegative;
-                    Redraw();
-                }
-            }
+            if (_blink.Update(delta, _isHovering)) Redraw();
         }
-        else if (_showNegative)
+        else if (_blink.ShowNegative)
         {
-            _showNegative = false;
+            _blink.Reset();
             Redraw();
         }
     }
@@ -57,10 +38,10 @@ public class ControlsView : BasePanel
         Surface.Clear();
         DrawBorder();
 
-        Color btnColor = _hand.CanRoll ? Theme.White : new Color(80, 80, 80);
+        Color btnColor = _hand.CanRoll ? Theme.White : Theme.Gray;
         string btnText = " [ RZUT KOSCMI ] ";
 
-        if (_showNegative)
+        if (_blink.ShowNegative)
         {
             Surface.Fill(_rollButtonBounds, Theme.Black, btnColor, 0);
             Surface.Print(3, 2, btnText, Theme.Black, btnColor);
@@ -78,7 +59,7 @@ public class ControlsView : BasePanel
         int startX = Width - rightLabel.Length - rightNum.Length - rightBracket.Length - 4;
         
         Surface.Print(startX, 2, rightLabel, Theme.NeonGreen, Theme.Black);
-        Surface.Print(startX + rightLabel.Length, 2, rightNum, Color.Cyan, Theme.Black);
+        Surface.Print(startX + rightLabel.Length, 2, rightNum, Theme.Cyan, Theme.Black);
         Surface.Print(startX + rightLabel.Length + rightNum.Length, 2, rightBracket, Theme.NeonGreen, Theme.Black);
     }
 

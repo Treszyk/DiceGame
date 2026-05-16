@@ -10,12 +10,8 @@ public class GameOverControlsView : BasePanel
     private bool _isHoveringPlay = false;
     private bool _isHoveringMenu = false;
     
-    private bool _showNegativePlay = false;
-    private bool _showNegativeMenu = false;
-
-    private TimeSpan _blinkTimerPlay = TimeSpan.Zero;
-    private TimeSpan _blinkTimerMenu = TimeSpan.Zero;
-    private readonly TimeSpan _blinkInterval = TimeSpan.FromSeconds(0.5);
+    private readonly BlinkState _blinkPlay = new();
+    private readonly BlinkState _blinkMenu = new();
 
     public event Action? OnPlayAgain;
     public event Action? OnMainMenu;
@@ -32,36 +28,8 @@ public class GameOverControlsView : BasePanel
         base.Update(delta);
 
         bool needsRedraw = false;
-
-        if (_isHoveringPlay)
-        {
-            if (!_showNegativePlay) { _showNegativePlay = true; needsRedraw = true; }
-        }
-        else
-        {
-            _blinkTimerPlay += delta;
-            if (_blinkTimerPlay >= _blinkInterval)
-            {
-                _blinkTimerPlay = TimeSpan.Zero;
-                _showNegativePlay = !_showNegativePlay;
-                needsRedraw = true;
-            }
-        }
-
-        if (_isHoveringMenu)
-        {
-            if (!_showNegativeMenu) { _showNegativeMenu = true; needsRedraw = true; }
-        }
-        else
-        {
-            _blinkTimerMenu += delta;
-            if (_blinkTimerMenu >= _blinkInterval)
-            {
-                _blinkTimerMenu = TimeSpan.Zero;
-                _showNegativeMenu = !_showNegativeMenu;
-                needsRedraw = true;
-            }
-        }
+        if (_blinkPlay.Update(delta, _isHoveringPlay)) needsRedraw = true;
+        if (_blinkMenu.Update(delta, _isHoveringMenu)) needsRedraw = true;
 
         if (needsRedraw) Redraw();
     }
@@ -72,7 +40,7 @@ public class GameOverControlsView : BasePanel
         DrawBorder();
 
         string playText = " [ JESZCZE RAZ ] ";
-        if (_showNegativePlay)
+        if (_blinkPlay.ShowNegative)
         {
             Surface.Fill(_playAgainBounds, Theme.Black, Theme.White, 0);
             Surface.Print(_playAgainBounds.X, 2, playText, Theme.Black, Theme.White);
@@ -83,7 +51,7 @@ public class GameOverControlsView : BasePanel
         }
 
         string menuText = " [ WYJDZ DO MENU ] ";
-        if (_showNegativeMenu)
+        if (_blinkMenu.ShowNegative)
         {
             Surface.Fill(_menuBounds, Theme.Black, Theme.Amber, 0);
             Surface.Print(_menuBounds.X, 2, menuText, Theme.Black, Theme.Amber);

@@ -32,7 +32,7 @@ public class HeaderView : BasePanel
         string num = (_activePlayer + 1).ToString();
         
         Surface.Print(2, 2, prefix, Theme.NeonGreen, Theme.Black);
-        Surface.Print(2 + prefix.Length, 2, num, Color.Cyan, Theme.Black);
+        Surface.Print(2 + prefix.Length, 2, num, Theme.Cyan, Theme.Black);
 
         string rightText = " [ ZAKONCZ GRE ] ";
         int startX = Width - rightText.Length - 2;

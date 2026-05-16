@@ -83,7 +83,7 @@ public class ScoreboardView : BasePanel
             
             if (_isGameOver)
             {
-                headerColor = _winners.Contains(p) ? Theme.NeonGreen : Color.Red;
+                headerColor = _winners.Contains(p) ? Theme.NeonGreen : Theme.Red;
             }
             else
             {
@@ -116,7 +116,7 @@ public class ScoreboardView : BasePanel
             
             if (_isGameOver)
             {
-                scoreColor = _winners.Contains(playerIndex) ? Theme.NeonGreen : Color.Red;
+                scoreColor = _winners.Contains(playerIndex) ? Theme.NeonGreen : Theme.Red;
             }
             
             PrintCentered(x + 1, GameSettings.ColWidth - 1, y, text, scoreColor);
@@ -128,12 +128,12 @@ public class ScoreboardView : BasePanel
             
             if (categoryIndex == _hoveredCategory)
             {
-                Surface.Fill(new Rectangle(x + 1, y, GameSettings.ColWidth - 1, 1), Theme.Black, Color.Cyan, 0);
-                PrintCentered(x + 1, GameSettings.ColWidth - 1, y, text, Theme.Black, Color.Cyan);
+                Surface.Fill(new Rectangle(x + 1, y, GameSettings.ColWidth - 1, 1), Theme.Black, Theme.Cyan, 0);
+                PrintCentered(x + 1, GameSettings.ColWidth - 1, y, text, Theme.Black, Theme.Cyan);
             }
             else
             {
-                PrintCentered(x + 1, GameSettings.ColWidth - 1, y, text, Color.Cyan, Theme.Black);
+                PrintCentered(x + 1, GameSettings.ColWidth - 1, y, text, Theme.Cyan, Theme.Black);
             }
         }
     }

@@ -18,9 +18,9 @@ public static class DiceRenderer
 
         if (!isActive)
         {
-            faceColor = new Color(30, 30, 30);
-            dotColor = new Color(70, 70, 70);
-            borderColor = new Color(60, 60, 60);
+            faceColor = Theme.InactiveFace;
+            dotColor = Theme.InactiveDot;
+            borderColor = Theme.InactiveBorder;
         }
         else if (isHeld)
         {
@@ -64,8 +64,8 @@ public static class DiceRenderer
 
     public static void DrawSmall(ICellSurface surface, int x, int y, int value, bool isActive = true)
     {
-        Color faceColor = isActive ? Color.White : new Color(30, 30, 30);
-        Color dotColor = isActive ? Color.Black : new Color(70, 70, 70);
+        Color faceColor = isActive ? Color.White : Theme.InactiveFace;
+        Color dotColor = isActive ? Color.Black : Theme.InactiveDot;
 
         surface.Fill(new Rectangle(x, y, 3, 3), dotColor, faceColor, 0);
 

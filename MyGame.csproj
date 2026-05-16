@@ -39,4 +39,8 @@
     <PackageReference Include="SadConsole.Extended" Version="10.9.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="DiceGame.Tests\**" />
+  </ItemGroup>
+
 </Project>

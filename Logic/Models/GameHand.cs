@@ -1,4 +1,4 @@
-namespace DiceGame.Logic;
+namespace DiceGame.Logic.Models;
 
 public class GameHand
 {

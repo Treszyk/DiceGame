@@ -11,8 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="DiceGame" />
     <Using Include="SadConsole" />
     <Using Include="SadRogue.Primitives" />
+    <Using Include="SadConsole.Input" />
     <Using Include="SadConsole.Console" Alias="Console" />
   </ItemGroup>
 
@@ -26,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets/Fonts/**">
+    <None Update="Assets/**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

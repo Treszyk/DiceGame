@@ -1,7 +1,5 @@
 using SadConsole.Configuration;
-using SadConsole;
-using DiceGame;
-using DiceGame.Logic;
+using DiceGame.Components.Core;
 using Microsoft.Xna.Framework;
 
 Settings.WindowTitle = "Dice Game 2026";

@@ -1,10 +1,9 @@
-using SadConsole;
-using SadConsole.Input;
-using SadRogue.Primitives;
-using DiceGame.Logic;
+using DiceGame.Logic.Models;
+using DiceGame.Logic.Scoring;
+using DiceGame.Components.Core;
 using System.Linq;
 
-namespace DiceGame.Components.Views;
+namespace DiceGame.Components.Views.Gameplay;
 
 public class ScoreboardView : BasePanel
 {
@@ -19,23 +18,20 @@ public class ScoreboardView : BasePanel
 
     private const int TopSectionCount = ScoreCategory.ThreeOfAKind;
     
-    private readonly GameHand _hand;
-    private readonly PlayerState[] _players;
+    private readonly GameSession _session;
     private int _hoveredCategory = -1;
 
     private bool _isGameOver = false;
     private System.Collections.Generic.List<int> _winners = new();
 
     public int ActivePlayerIndex { get; set; } = 0;
-    public event System.Action? OnScoreLocked;
 
-    public ScoreboardView(PlayerState[] players, GameHand hand, int height)
-        : base(GameSettings.LabelWidth + (players.Length * GameSettings.ColWidth) + 1, height, Theme.Amber)
+    public ScoreboardView(GameSession session, int height)
+        : base(GameSettings.LabelWidth + (session.PlayerCount * GameSettings.ColWidth) + 1, height, Theme.Amber)
     {
-        _players = players;
-        _hand = hand;
+        _session = session;
         UseMouse = true;
-        _hand.OnHandChanged += Redraw;
+        _session.Hand.OnHandChanged += Redraw;
         Redraw();
     }
 
@@ -71,7 +67,7 @@ public class ScoreboardView : BasePanel
         for (int x = 1; x < Width - 1; x++)
             Surface.SetBackground(x, gapY, Theme.Amber);
 
-        for (int p = 0; p <= _players.Length; p++)
+        for (int p = 0; p <= _session.PlayerCount; p++)
         {
             int x = GameSettings.LabelWidth + (p * GameSettings.ColWidth);
             if (x < Width)
@@ -81,7 +77,7 @@ public class ScoreboardView : BasePanel
 
     private void DrawHeaders()
     {
-        for (int p = 0; p < _players.Length; p++)
+        for (int p = 0; p < _session.PlayerCount; p++)
         {
             int x = GameSettings.LabelWidth + (p * GameSettings.ColWidth);
             Color headerColor = Theme.Amber;
@@ -104,7 +100,7 @@ public class ScoreboardView : BasePanel
         for (int i = 0; i < Categories.Length; i++)
         {
             int y = GetRowY(i);
-            for (int p = 0; p < _players.Length; p++)
+            for (int p = 0; p < _session.PlayerCount; p++)
             {
                 int x = GameSettings.LabelWidth + (p * GameSettings.ColWidth);
                 DrawCellScore(p, i, x, y);
@@ -114,9 +110,9 @@ public class ScoreboardView : BasePanel
 
     private void DrawCellScore(int playerIndex, int categoryIndex, int x, int y)
     {
-        if (_players[playerIndex].Scores[categoryIndex].HasValue)
+        if (_session.Players[playerIndex].Scores[categoryIndex].HasValue)
         {
-            string text = _players[playerIndex].Scores[categoryIndex].GetValueOrDefault().ToString().PadLeft(2, '0');
+            string text = _session.Players[playerIndex].Scores[categoryIndex].GetValueOrDefault().ToString().PadLeft(2, '0');
             Color scoreColor = Theme.NeonGreen;
             
             if (_isGameOver)
@@ -126,9 +122,9 @@ public class ScoreboardView : BasePanel
             
             PrintCentered(x + 1, GameSettings.ColWidth - 1, y, text, scoreColor);
         }
-        else if (!_isGameOver && playerIndex == ActivePlayerIndex && ScoreCategory.PlayableCategories.Contains(categoryIndex) && _hand.RollCount > 0)
+        else if (!_isGameOver && playerIndex == ActivePlayerIndex && ScoreCategory.PlayableCategories.Contains(categoryIndex) && _session.Hand.RollCount > 0)
         {
-            int ghostScore = ScoreCalculator.Calculate(categoryIndex, _hand.Dice);
+            int ghostScore = ScoreCalculator.Calculate(categoryIndex, _session.Hand.Dice);
             string text = ghostScore.ToString().PadLeft(2, '0');
             
             if (categoryIndex == _hoveredCategory)
@@ -171,10 +167,10 @@ public class ScoreboardView : BasePanel
         int previousHover = _hoveredCategory;
         _hoveredCategory = -1;
 
-        if (pos.X > activeColumnXStart && pos.X < activeColumnXEnd && _hand.RollCount > 0)
+        if (pos.X > activeColumnXStart && pos.X < activeColumnXEnd && _session.Hand.RollCount > 0)
         {
             int? cat = GetCategoryAtY(pos.Y);
-            if (cat.HasValue && ScoreCategory.PlayableCategories.Contains(cat.Value) && !_players[ActivePlayerIndex].Scores[cat.Value].HasValue)
+            if (cat.HasValue && ScoreCategory.PlayableCategories.Contains(cat.Value) && !_session.Players[ActivePlayerIndex].Scores[cat.Value].HasValue)
             {
                 _hoveredCategory = cat.Value;
                 if (previousHover != _hoveredCategory) SoundUtility.PlayHover();
@@ -182,12 +178,8 @@ public class ScoreboardView : BasePanel
                 if (state.Mouse.LeftClicked)
                 {
                     SoundUtility.PlayLock();
-                    int ghostScore = ScoreCalculator.Calculate(_hoveredCategory, _hand.Dice);
-                    _players[ActivePlayerIndex].LockScore(_hoveredCategory, ghostScore);
-                    
-                    _hand.Reset();
+                    _session.LockScore(_hoveredCategory);
                     _hoveredCategory = -1;
-                    OnScoreLocked?.Invoke();
                 }
             }
             else if (state.Mouse.LeftClicked)

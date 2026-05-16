@@ -1,9 +1,7 @@
-using SadConsole;
-using SadConsole.Input;
-using SadRogue.Primitives;
-using DiceGame.Logic;
+using DiceGame.Logic.Models;
+using DiceGame.Components.Core;
 
-namespace DiceGame.Components.Views;
+namespace DiceGame.Components.Views.Gameplay;
 
 public class DiceTrayView : BasePanel
 {

@@ -1,10 +1,6 @@
-using SadConsole;
-using SadConsole.Input;
-using SadRogue.Primitives;
-using System;
-using DiceGame.Logic;
+using DiceGame.Components.Core;
 
-namespace DiceGame.Components.Views;
+namespace DiceGame.Components.Views.GameOver;
 
 public class GameOverControlsView : BasePanel
 {

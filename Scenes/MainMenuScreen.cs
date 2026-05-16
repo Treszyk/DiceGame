@@ -1,10 +1,5 @@
-using System;
+using DiceGame.Components.Core;
 using System.Collections.Generic;
-using SadConsole;
-using SadConsole.Input;
-using SadRogue.Primitives;
-using DiceGame.Components;
-using DiceGame.Logic;
 
 namespace DiceGame.Scenes;
 

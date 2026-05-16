@@ -1,10 +1,7 @@
-using SadConsole;
-using SadConsole.Input;
-using SadRogue.Primitives;
-using DiceGame.Logic;
-using System;
+using DiceGame.Logic.Models;
+using DiceGame.Components.Core;
 
-namespace DiceGame.Components.Views;
+namespace DiceGame.Components.Views.Gameplay;
 
 public class ControlsView : BasePanel
 {
@@ -101,7 +98,7 @@ public class ControlsView : BasePanel
         {
             if (_hand.CanRoll)
             {
-                SoundUtility.PlayDiceRoll();
+                SoundUtility.PlayRoll();
                 _hand.Roll();
             }
             else

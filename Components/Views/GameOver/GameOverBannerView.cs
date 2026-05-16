@@ -1,8 +1,7 @@
-using SadConsole;
-using SadRogue.Primitives;
+using DiceGame.Components.Core;
 using System.Collections.Generic;
 
-namespace DiceGame.Components.Views;
+namespace DiceGame.Components.Views.GameOver;
 
 public class GameOverBannerView : BasePanel
 {

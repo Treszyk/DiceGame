@@ -1,10 +1,10 @@
-namespace DiceGame.Scenes;
+using DiceGame.Logic.Models;
+using DiceGame.Logic.Scoring;
+using DiceGame.Components.Core;
+using DiceGame.Components.Views.Gameplay;
+using DiceGame.Components.Views.GameOver;
 
-using DiceGame.Components;
-using DiceGame.Components.Views;
-using DiceGame.Logic;
-using SadConsole;
-using SadRogue.Primitives;
+namespace DiceGame.Scenes;
 
 public class RootScreen : ScreenObject
 {
@@ -12,17 +12,14 @@ public class RootScreen : ScreenObject
     private DiceTrayView _diceTray;
     private ControlsView _controls;
     private ScoreboardView _scoreboard;
-    private GameHand _hand;
-    private PlayerState[] _players;
-    private int _activePlayerIndex = 0;
-
-    private int _playerCount;
+    
+    private readonly GameSession _session;
     public System.Action OnQuitToMenuRequested = delegate { };
 
     public RootScreen(int playerCount, System.Action onQuit)
     {
-        _playerCount = playerCount;
         OnQuitToMenuRequested = onQuit;
+        _session = new GameSession(playerCount);
 
         try 
         { 
@@ -32,27 +29,23 @@ public class RootScreen : ScreenObject
         } 
         catch { }
 
-        _hand = new GameHand();
-        
-        _players = new PlayerState[_playerCount];
-        for (int i = 0; i < _playerCount; i++)
-            _players[i] = new PlayerState();
-
         int p = GameSettings.Padding;
         int lw = GameSettings.LeftWidth;
 
         _header = new HeaderView(lw, GameSettings.HeaderHeight);
         _header.OnQuitToMenu += () => OnQuitToMenuRequested?.Invoke();
         
-        _diceTray = new DiceTrayView(lw, GameSettings.DiceTrayHeight, _hand);
-        _controls = new ControlsView(lw, GameSettings.ControlsHeight, _hand);
-        _scoreboard = new ScoreboardView(_players, _hand, GameSettings.ScoreboardHeight);
+        _diceTray = new DiceTrayView(lw, GameSettings.DiceTrayHeight, _session.Hand);
+        _controls = new ControlsView(lw, GameSettings.ControlsHeight, _session.Hand);
+        _scoreboard = new ScoreboardView(_session, GameSettings.ScoreboardHeight);
 
         _header.Position = new Point(p, p);
         _diceTray.Position = new Point(p, p + GameSettings.HeaderHeight);
         _controls.Position = new Point(p, p + GameSettings.HeaderHeight + GameSettings.DiceTrayHeight);
         _scoreboard.Position = new Point(p + lw, p);
-        _scoreboard.OnScoreLocked += AdvanceTurn;
+        
+        _session.OnTurnAdvanced += SyncSessionToUi;
+        _session.OnGameOver += TriggerGameOver;
 
         Children.Add(_header);
         Children.Add(_diceTray);
@@ -62,45 +55,18 @@ public class RootScreen : ScreenObject
         IsFocused = true;
     }
 
-    private void AdvanceTurn()
+    private void SyncSessionToUi()
     {
-        _activePlayerIndex++;
-        if (_activePlayerIndex >= _playerCount)
-        {
-            _activePlayerIndex = 0;
-        }
-
-        _scoreboard.ActivePlayerIndex = _activePlayerIndex;
+        _scoreboard.ActivePlayerIndex = _session.ActivePlayerIndex;
         _scoreboard.Redraw();
-        _header.SetActivePlayer(_activePlayerIndex);
-
-        if (System.Linq.Enumerable.All(_players, p => !p.HasEmptyCategories()))
-        {
-            TriggerGameOver();
-        }
+        _header.SetActivePlayer(_session.ActivePlayerIndex);
     }
 
     private void TriggerGameOver()
     {
         SoundUtility.PlayGameEnd();
-        int maxScore = -1;
-        var winners = new System.Collections.Generic.List<int>();
         
-        for (int i = 0; i < _players.Length; i++)
-        {
-            int score = _players[i].Scores[ScoreCategory.GrandTotal].GetValueOrDefault();
-            if (score > maxScore)
-            {
-                maxScore = score;
-                winners.Clear();
-                winners.Add(i);
-            }
-            else if (score == maxScore)
-            {
-                winners.Add(i);
-            }
-        }
-
+        var winners = _session.GetWinners(out int maxScore);
         _scoreboard.SetGameOver(winners);
 
         Children.Remove(_diceTray);
@@ -114,7 +80,7 @@ public class RootScreen : ScreenObject
 
         gameOverControls.OnPlayAgain += () => 
         {
-            SadConsole.Game.Instance.Screen = new RootScreen(_playerCount, OnQuitToMenuRequested);
+            SadConsole.Game.Instance.Screen = new RootScreen(_session.PlayerCount, OnQuitToMenuRequested);
         };
         
         gameOverControls.OnMainMenu += () => 

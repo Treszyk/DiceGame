@@ -1,6 +1,6 @@
 using SadRogue.Primitives;
 
-namespace DiceGame.Components;
+namespace DiceGame.Components.Core;
 
 public static class Theme
 {

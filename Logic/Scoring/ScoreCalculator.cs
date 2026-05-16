@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
+using DiceGame.Logic.Models;
 
-namespace DiceGame.Logic;
+namespace DiceGame.Logic.Scoring;
 
 public static class ScoreCalculator
 {

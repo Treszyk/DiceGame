@@ -1,18 +1,14 @@
-namespace DiceGame.Logic;
-
-using System;
+namespace DiceGame.Logic.Models;
 
 public class Die
 {
     private static readonly Random _random = new Random();
-    
     public int Value { get; private set; }
     public bool IsHeld { get; set; }
 
     public Die()
     {
-        Value = 1;
-        IsHeld = false;
+        Reset();
     }
 
     public void Roll()
@@ -23,7 +19,7 @@ public class Die
 
     public void Reset()
     {
-        IsHeld = false;
         Value = 1;
+        IsHeld = false;
     }
 }

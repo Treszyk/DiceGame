@@ -1,4 +1,4 @@
-namespace DiceGame.Components;
+namespace DiceGame.Components.Core;
 
 public static class DiceRenderer
 {

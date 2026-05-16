@@ -1,15 +1,19 @@
 using System.Linq;
+using DiceGame.Logic.Scoring;
 
-namespace DiceGame.Logic;
+namespace DiceGame.Logic.Models;
 
 public class PlayerState
 {
-    public int?[] Scores { get; } = new int?[18];
+    public int?[] Scores { get; private set; }
+
+    public PlayerState()
+    {
+        Scores = new int?[18];
+    }
 
     public void LockScore(int categoryIndex, int score)
     {
-        if (categoryIndex < 0 || categoryIndex >= 18 || Scores[categoryIndex] != null) return;
-        
         Scores[categoryIndex] = score;
         UpdateSums();
     }

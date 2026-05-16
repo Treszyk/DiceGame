@@ -1,8 +1,6 @@
-using SadConsole;
-using SadRogue.Primitives;
-using DiceGame.Logic;
+using DiceGame.Components.Core;
 
-namespace DiceGame.Components.Views;
+namespace DiceGame.Components.Views.Gameplay;
 
 public class HeaderView : BasePanel
 {

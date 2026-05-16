@@ -9,7 +9,7 @@ public class HeaderView : BasePanel
     private Rectangle _quitBounds;
     private bool _isHoveringQuit = false;
 
-    public System.Action OnQuitToMenu = delegate { };
+    public event Action? OnQuitToMenu;
 
     public HeaderView(int width, int height) : base(width, height, Theme.NeonGreen)
     {

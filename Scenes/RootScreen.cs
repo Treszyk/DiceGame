@@ -6,7 +6,7 @@ using DiceGame.Components.Views.GameOver;
 
 namespace DiceGame.Scenes;
 
-public class RootScreen : ScreenObject
+public class RootScreen : ScreenObject, IDisposable
 {
     private HeaderView _header;
     private DiceTrayView _diceTray;
@@ -14,11 +14,11 @@ public class RootScreen : ScreenObject
     private ScoreboardView _scoreboard;
     
     private readonly GameSession _session;
-    public System.Action OnQuitToMenuRequested = delegate { };
+    public event Action? OnQuitToMenuRequested;
 
-    public RootScreen(int playerCount, System.Action onQuit)
+    public RootScreen(int playerCount, Action? onQuit)
     {
-        OnQuitToMenuRequested = onQuit;
+        if (onQuit != null) OnQuitToMenuRequested += onQuit;
         _session = new GameSession(playerCount);
 
         int p = GameSettings.Padding;
@@ -46,6 +46,13 @@ public class RootScreen : ScreenObject
 
         IsFocused = true;
     }
+
+    public void Dispose()
+    {
+        _session.OnTurnAdvanced -= SyncSessionToUi;
+        _session.OnGameOver -= TriggerGameOver;
+    }
+
 
     private void SyncSessionToUi()
     {
@@ -86,33 +93,6 @@ public class RootScreen : ScreenObject
 
     public override bool ProcessKeyboard(SadConsole.Input.Keyboard keyboard)
     {
-        /*
-        if (keyboard.IsKeyPressed(SadConsole.Input.Keys.F1))
-        {
-            DiceGame.Logic.CheatingUtility.ForceWin(_players, 0);
-            AdvanceTurn();
-            return true;
-        }
-        if (keyboard.IsKeyPressed(SadConsole.Input.Keys.F2))
-        {
-            DiceGame.Logic.CheatingUtility.ForceWin(_players, 0, 2);
-            AdvanceTurn();
-            return true;
-        }
-        if (keyboard.IsKeyPressed(SadConsole.Input.Keys.F3))
-        {
-            DiceGame.Logic.CheatingUtility.ForceUpperBonus(_players, 0);
-            _scoreboard.Redraw();
-            return true;
-        }
-        if (keyboard.IsKeyPressed(SadConsole.Input.Keys.F4))
-        {
-            DiceGame.Logic.CheatingUtility.ForceWin(_players, System.Linq.Enumerable.Range(0, _playerCount).ToArray());
-            AdvanceTurn();
-            return true;
-        }
-        */
-
         return base.ProcessKeyboard(keyboard);
     }
 }

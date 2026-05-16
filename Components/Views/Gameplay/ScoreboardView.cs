@@ -34,6 +34,12 @@ public class ScoreboardView : BasePanel
         Redraw();
     }
 
+    public override void Dispose()
+    {
+        _session.Hand.OnHandChanged -= Redraw;
+        base.Dispose();
+    }
+
     public void SetGameOver(System.Collections.Generic.List<int> winners)
     {
         _isGameOver = true;

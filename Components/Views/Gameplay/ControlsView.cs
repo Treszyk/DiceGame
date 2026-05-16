@@ -18,7 +18,13 @@ public class ControlsView : BasePanel
         Redraw();
     }
 
-    public override void Update(System.TimeSpan delta)
+    public override void Dispose()
+    {
+        _hand.OnHandChanged -= Redraw;
+        base.Dispose();
+    }
+
+    public override void Update(TimeSpan delta)
     {
         base.Update(delta);
 

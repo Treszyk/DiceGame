@@ -3,7 +3,7 @@ using SadRogue.Primitives;
 
 namespace DiceGame.Components.Core;
 
-public abstract class BasePanel : ScreenSurface
+public abstract class BasePanel : ScreenSurface, IDisposable
 {
     protected Color ThemeColor { get; }
 
@@ -13,6 +13,11 @@ public abstract class BasePanel : ScreenSurface
         Surface.DefaultBackground = Theme.Black;
         Surface.DefaultForeground = themeColor;
         Surface.Clear();
+    }
+
+    public new virtual void Dispose()
+    {
+        base.Dispose();
     }
 
     protected void DrawBorder()

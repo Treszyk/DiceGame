@@ -36,11 +36,12 @@ Builder
         void LoadMainMenu()
         {
             var menu = new DiceGame.Scenes.MainMenuScreen();
-            menu.OnPlayerCountSelected = (count) =>
+            menu.OnPlayerCountSelected += (count) =>
             {
                 var root = new DiceGame.Scenes.RootScreen(count, LoadMainMenu);
                 SwitchScreen(root, GameSettings.GetTotalWidth(count));
             };
+            menu.OnQuitRequested += () => System.Environment.Exit(0);
             SwitchScreen(menu, 80);
         }
 

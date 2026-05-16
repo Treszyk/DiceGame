@@ -2,7 +2,7 @@ using DiceGame.Components.Core;
 
 namespace DiceGame.Scenes;
 
-public class MainMenuScreen : ScreenSurface
+public class MainMenuScreen : BasePanel
 {
     private readonly Rectangle[] _buttonBounds = new Rectangle[4];
     private int _hoveredIndex = -1;
@@ -14,9 +14,10 @@ public class MainMenuScreen : ScreenSurface
     private readonly TimeSpan _decoInterval = TimeSpan.FromMilliseconds(40);
     private readonly Random _rnd = new Random();
 
-    public Action<int> OnPlayerCountSelected = delegate { };
+    public event Action<int>? OnPlayerCountSelected;
+    public event Action? OnQuitRequested;
 
-    public MainMenuScreen() : base(80, GameSettings.TotalHeight)
+    public MainMenuScreen() : base(80, GameSettings.TotalHeight, Theme.NeonGreen)
     {
         UseMouse = true;
         
@@ -79,10 +80,10 @@ public class MainMenuScreen : ScreenSurface
         int logoY = Height / 2 - 10;
         for (int i = 0; i < asciiArt.Length; i++)
         {
-            PrintCentered(logoY + i, asciiArt[i], Theme.NeonGreen);
+            PrintCentered(0, Width, logoY + i, asciiArt[i], Theme.NeonGreen);
         }
 
-        PrintCentered(logoY + 5, "WYBIERZ LICZBE GRACZY:", Color.Cyan);
+        PrintCentered(0, Width, logoY + 5, "WYBIERZ LICZBE GRACZY:", Theme.Cyan);
 
         for (int i = 0; i < 4; i++)
         {
@@ -105,17 +106,8 @@ public class MainMenuScreen : ScreenSurface
             }
             
             Surface.Fill(_buttonBounds[i], btnColor, btnBg, 0);
-            
-            int textX = _buttonBounds[i].X + (_buttonBounds[i].Width - text.Length) / 2;
-            int textY = _buttonBounds[i].Y + 1;
-            Surface.Print(textX, textY, text, btnColor, btnBg);
+            PrintCentered(_buttonBounds[i].X, _buttonBounds[i].Width, _buttonBounds[i].Y + 1, text, btnColor, btnBg);
         }
-    }
-
-    private void PrintCentered(int y, string text, Color color)
-    {
-        int x = (Width - text.Length) / 2;
-        Surface.Print(x, y, text, color);
     }
 
     public override bool ProcessMouse(MouseScreenObjectState state)
@@ -147,7 +139,7 @@ public class MainMenuScreen : ScreenSurface
             }
             else
             {
-                System.Environment.Exit(0);
+                OnQuitRequested?.Invoke();
             }
             return true;
         }

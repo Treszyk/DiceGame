@@ -17,6 +17,12 @@ public class DiceTrayView : BasePanel
         Redraw();
     }
 
+    public override void Dispose()
+    {
+        _hand.OnHandChanged -= Redraw;
+        base.Dispose();
+    }
+
     private Point GetDiePosition(int index)
     {
         int row1Count = 3;
@@ -83,7 +89,7 @@ public class DiceTrayView : BasePanel
         if (isHeld)
             Surface.Print(x, y, " TRZYMAJ ", Theme.Black, Theme.NeonGreen);
         else
-            Surface.Print(x, y, " TRZYMAJ ", new Color(80, 80, 80), Theme.Black);
+            Surface.Print(x, y, " TRZYMAJ ", Theme.Gray, Theme.Black);
     }
 
     public override bool ProcessMouse(MouseScreenObjectState state)

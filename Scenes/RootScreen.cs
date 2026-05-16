@@ -88,7 +88,7 @@ public class RootScreen : ScreenObject
         
         for (int i = 0; i < _players.Length; i++)
         {
-            int score = _players[i].Scores[17].GetValueOrDefault();
+            int score = _players[i].Scores[ScoreCategory.GrandTotal].GetValueOrDefault();
             if (score > maxScore)
             {
                 maxScore = score;

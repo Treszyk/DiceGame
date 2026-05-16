@@ -2,6 +2,7 @@ using SadConsole;
 using SadConsole.Input;
 using SadRogue.Primitives;
 using DiceGame.Logic;
+using System.Linq;
 
 namespace DiceGame.Components.Views;
 
@@ -15,15 +16,8 @@ public class ScoreboardView : BasePanel
         "RAZEM"
     };
 
-    private static readonly bool[] IsPlayable = {
-        true, true, true, true, true, true,
-        false, false, false,
-        true, true, true,
-        true, true, true, true, false,
-        false
-    };
 
-    private const int TopSectionCount = 9;
+    private const int TopSectionCount = ScoreCategory.ThreeOfAKind;
     
     private readonly GameHand _hand;
     private readonly PlayerState[] _players;
@@ -69,12 +63,13 @@ public class ScoreboardView : BasePanel
             int y = GetRowY(i);
             Surface.Print(2, y, Categories[i], Theme.Amber);
 
-            if (i < Categories.Length - 1 && i != 8)
+            if (i < Categories.Length - 1 && i != ScoreCategory.UpperTotal)
                 Surface.DrawLine(new Point(1, y + 1), new Point(Width - 2, y + 1), 196, Theme.Amber);
         }
 
+        int gapY = GetRowY(ScoreCategory.ThreeOfAKind) - 2;
         for (int x = 1; x < Width - 1; x++)
-            Surface.SetBackground(x, 22, Theme.Amber);
+            Surface.SetBackground(x, gapY, Theme.Amber);
 
         for (int p = 0; p <= _players.Length; p++)
         {
@@ -131,7 +126,7 @@ public class ScoreboardView : BasePanel
             
             PrintCentered(x + 1, GameSettings.ColWidth - 1, y, text, scoreColor);
         }
-        else if (!_isGameOver && playerIndex == ActivePlayerIndex && IsPlayable[categoryIndex] && _hand.RollCount > 0)
+        else if (!_isGameOver && playerIndex == ActivePlayerIndex && ScoreCategory.PlayableCategories.Contains(categoryIndex) && _hand.RollCount > 0)
         {
             int ghostScore = ScoreCalculator.Calculate(categoryIndex, _hand.Dice);
             string text = ghostScore.ToString().PadLeft(2, '0');
@@ -179,7 +174,7 @@ public class ScoreboardView : BasePanel
         if (pos.X > activeColumnXStart && pos.X < activeColumnXEnd && _hand.RollCount > 0)
         {
             int? cat = GetCategoryAtY(pos.Y);
-            if (cat.HasValue && IsPlayable[cat.Value] && !_players[ActivePlayerIndex].Scores[cat.Value].HasValue)
+            if (cat.HasValue && ScoreCategory.PlayableCategories.Contains(cat.Value) && !_players[ActivePlayerIndex].Scores[cat.Value].HasValue)
             {
                 _hoveredCategory = cat.Value;
                 if (previousHover != _hoveredCategory) SoundUtility.PlayHover();

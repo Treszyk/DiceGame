@@ -13,23 +13,42 @@ public static class ScoreCalculator
         
         switch (categoryIndex)
         {
-            case 0: return SumSpecific(values, 1);
-            case 1: return SumSpecific(values, 2);
-            case 2: return SumSpecific(values, 3);
-            case 3: return SumSpecific(values, 4);
-            case 4: return SumSpecific(values, 5);
-            case 5: return SumSpecific(values, 6);
+            case ScoreCategory.Ones: return SumSpecific(values, 1);
+            case ScoreCategory.Twos: return SumSpecific(values, 2);
+            case ScoreCategory.Threes: return SumSpecific(values, 3);
+            case ScoreCategory.Fours: return SumSpecific(values, 4);
+            case ScoreCategory.Fives: return SumSpecific(values, 5);
+            case ScoreCategory.Sixes: return SumSpecific(values, 6);
             
-            case 9: return HasOfAKind(values, 3) ? values.Sum() : 0;
-            case 10: return HasOfAKind(values, 4) ? values.Sum() : 0;
-            case 11: return IsFullHouse(values) ? 25 : 0;
-            case 12: return HasStraight(values, 4) ? 30 : 0;
-            case 13: return HasStraight(values, 5) ? 40 : 0;
-            case 14: return HasOfAKind(values, 5) ? 50 : 0;
-            case 15: return values.Sum();
+            case ScoreCategory.ThreeOfAKind: return HasOfAKind(values, 3) ? values.Sum() : 0;
+            case ScoreCategory.FourOfAKind: return HasOfAKind(values, 4) ? values.Sum() : 0;
+            case ScoreCategory.FullHouse: return IsFullHouse(values) ? 25 : 0;
+            case ScoreCategory.SmallStraight: return HasStraight(values, 4) ? 30 : 0;
+            case ScoreCategory.LargeStraight: return HasStraight(values, 5) ? 40 : 0;
+            case ScoreCategory.King: return HasOfAKind(values, 5) ? 50 : 0;
+            case ScoreCategory.Chance: return values.Sum();
             
             default: return 0;
         }
+    }
+
+    public static int CalculateUpperSum(int?[] scores)
+    {
+        int sum = 0;
+        for (int i = ScoreCategory.Ones; i <= ScoreCategory.Sixes; i++)
+            sum += scores[i].GetValueOrDefault();
+        return sum;
+    }
+
+    public static int CalculateBonus(int upperSum) => 
+        upperSum >= ScoreCategory.BonusThreshold ? ScoreCategory.BonusValue : 0;
+
+    public static int CalculateLowerSum(int?[] scores)
+    {
+        int sum = 0;
+        for (int i = ScoreCategory.ThreeOfAKind; i <= ScoreCategory.Chance; i++)
+            sum += scores[i].GetValueOrDefault();
+        return sum;
     }
 
     private static int SumSpecific(int[] values, int target) => values.Where(v => v == target).Sum();

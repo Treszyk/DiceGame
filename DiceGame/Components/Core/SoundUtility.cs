@@ -21,13 +21,27 @@ public static class SoundUtility
         }
     }
 
+    private static SoundEffectInstance? _bgmInstance;
+
     public static void PlayRoll() => Play("roll");
     public static void PlayLock() => Play("lock");
     public static void PlayHover() => Play("hover");
     public static void PlaySelect() => Play("select");
     public static void PlayGameEnd() => Play("game_end");
     public static void PlayInactive() => Play("inactive_btn");
-    public static void PlayBGM() => Play("bit_shift", 0.3f);
+    
+    public static void PlayBGM()
+    {
+        if (_bgmInstance != null) return;
+        
+        if (_sounds.TryGetValue("bit_shift", out var sound))
+        {
+            _bgmInstance = sound.CreateInstance();
+            _bgmInstance.IsLooped = true;
+            _bgmInstance.Volume = 0.3f;
+            _bgmInstance.Play();
+        }
+    }
 
     private static void Play(string name, float volume = 1.0f)
     {

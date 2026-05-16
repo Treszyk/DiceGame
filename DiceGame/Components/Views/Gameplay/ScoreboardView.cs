@@ -8,7 +8,7 @@ public class ScoreboardView : BasePanel
 {
     private static readonly string[] Categories = {
         "JEDYNKI", "DWOJKI", "TROJKI", "CZWORKI", "PIATKI", "SZOSTKI",
-        "SUMA", "PREMIA", "SUMA (G)",
+        "SUMA 1-6", "PREMIA", "SUMA (G)",
         "3 JEDNAKOWE", "4 JEDNAKOWE", "FULL",
         "MALY STRIT", "DUZY STRIT", "KROL", "SZANSA", "SUMA (D)",
         "RAZEM"
